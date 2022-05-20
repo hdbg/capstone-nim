@@ -64,87 +64,6 @@ type
 
 ##  Sub-flags of EFLAGS
 
-const
-  EFLAGS_MODIFY_AF* = (1'i64 shl 0)
-  EFLAGS_MODIFY_CF* = (1'i64 shl 1)
-  EFLAGS_MODIFY_SF* = (1'i64 shl 2)
-  EFLAGS_MODIFY_ZF* = (1'i64 shl 3)
-  EFLAGS_MODIFY_PF* = (1'i64 shl 4)
-  EFLAGS_MODIFY_OF* = (1'i64 shl 5)
-  EFLAGS_MODIFY_TF* = (1'i64 shl 6)
-  EFLAGS_MODIFY_IF* = (1'i64 shl 7)
-  EFLAGS_MODIFY_DF* = (1'i64 shl 8)
-  EFLAGS_MODIFY_NT* = (1'i64 shl 9)
-  EFLAGS_MODIFY_RF* = (1'i64 shl 10)
-  EFLAGS_PRIOR_OF* = (1'i64 shl 11)
-  EFLAGS_PRIOR_SF* = (1'i64 shl 12)
-  EFLAGS_PRIOR_ZF* = (1'i64 shl 13)
-  EFLAGS_PRIOR_AF* = (1'i64 shl 14)
-  EFLAGS_PRIOR_PF* = (1'i64 shl 15)
-  EFLAGS_PRIOR_CF* = (1'i64 shl 16)
-  EFLAGS_PRIOR_TF* = (1'i64 shl 17)
-  EFLAGS_PRIOR_IF* = (1'i64 shl 18)
-  EFLAGS_PRIOR_DF* = (1'i64 shl 19)
-  EFLAGS_PRIOR_NT* = (1'i64 shl 20)
-  EFLAGS_RESET_OF* = (1'i64 shl 21)
-  EFLAGS_RESET_CF* = (1'i64 shl 22)
-  EFLAGS_RESET_DF* = (1'i64 shl 23)
-  EFLAGS_RESET_IF* = (1'i64 shl 24)
-  EFLAGS_RESET_SF* = (1'i64 shl 25)
-  EFLAGS_RESET_AF* = (1'i64 shl 26)
-  EFLAGS_RESET_TF* = (1'i64 shl 27)
-  EFLAGS_RESET_NT* = (1'i64 shl 28)
-  EFLAGS_RESET_PF* = (1'i64 shl 29)
-  EFLAGS_SET_CF* = (1'i64 shl 30)
-  EFLAGS_SET_DF* = (1'i64 shl 31)
-  EFLAGS_SET_IF* = (1'i64 shl 32)
-  EFLAGS_TEST_OF* = (1'i64 shl 33)
-  EFLAGS_TEST_SF* = (1'i64 shl 34)
-  EFLAGS_TEST_ZF* = (1'i64 shl 35)
-  EFLAGS_TEST_PF* = (1'i64 shl 36)
-  EFLAGS_TEST_CF* = (1'i64 shl 37)
-  EFLAGS_TEST_NT* = (1'i64 shl 38)
-  EFLAGS_TEST_DF* = (1'i64 shl 39)
-  EFLAGS_UNDEFINED_OF* = (1'i64 shl 40)
-  EFLAGS_UNDEFINED_SF* = (1'i64 shl 41)
-  EFLAGS_UNDEFINED_ZF* = (1'i64 shl 42)
-  EFLAGS_UNDEFINED_PF* = (1'i64 shl 43)
-  EFLAGS_UNDEFINED_AF* = (1'i64 shl 44)
-  EFLAGS_UNDEFINED_CF* = (1'i64 shl 45)
-  EFLAGS_RESET_RF* = (1'i64 shl 46)
-  EFLAGS_TEST_RF* = (1'i64 shl 47)
-  EFLAGS_TEST_IF* = (1'i64 shl 48)
-  EFLAGS_TEST_TF* = (1'i64 shl 49)
-  EFLAGS_TEST_AF* = (1'i64 shl 50)
-  EFLAGS_RESET_ZF* = (1'i64 shl 51)
-  EFLAGS_SET_OF* = (1'i64 shl 52)
-  EFLAGS_SET_SF* = (1'i64 shl 53)
-  EFLAGS_SET_ZF* = (1'i64 shl 54)
-  EFLAGS_SET_AF* = (1'i64 shl 55)
-  EFLAGS_SET_PF* = (1'i64 shl 56)
-  EFLAGS_RESET_0F* = (1'i64 shl 57)
-  EFLAGS_RESET_AC* = (1'i64 shl 58)
-  FPU_FLAGS_MODIFY_C0* = (1'i64 shl 0)
-  FPU_FLAGS_MODIFY_C1* = (1'i64 shl 1)
-  FPU_FLAGS_MODIFY_C2* = (1'i64 shl 2)
-  FPU_FLAGS_MODIFY_C3* = (1'i64 shl 3)
-  FPU_FLAGS_RESET_C0* = (1'i64 shl 4)
-  FPU_FLAGS_RESET_C1* = (1'i64 shl 5)
-  FPU_FLAGS_RESET_C2* = (1'i64 shl 6)
-  FPU_FLAGS_RESET_C3* = (1'i64 shl 7)
-  FPU_FLAGS_SET_C0* = (1'i64 shl 8)
-  FPU_FLAGS_SET_C1* = (1'i64 shl 9)
-  FPU_FLAGS_SET_C2* = (1'i64 shl 10)
-  FPU_FLAGS_SET_C3* = (1'i64 shl 11)
-  FPU_FLAGS_UNDEFINED_C0* = (1'i64 shl 12)
-  FPU_FLAGS_UNDEFINED_C1* = (1'i64 shl 13)
-  FPU_FLAGS_UNDEFINED_C2* = (1'i64 shl 14)
-  FPU_FLAGS_UNDEFINED_C3* = (1'i64 shl 15)
-  FPU_FLAGS_TEST_C0* = (1'i64 shl 16)
-  FPU_FLAGS_TEST_C1* = (1'i64 shl 17)
-  FPU_FLAGS_TEST_C2* = (1'i64 shl 18)
-  FPU_FLAGS_TEST_C3* = (1'i64 shl 19)
-
 ## / Operand type for instruction's operands
 
 type
@@ -152,16 +71,8 @@ type
     INVALID = 0           ## /< = CS_OP_INVALID (Uninitialized).
     REG               ## /< = CS_OP_REG (Register operand).
     IMM               ## /< = CS_OP_IMM (Immediate operand).
-    MEM                ## /< = CS_OP_MEM (Memory operand).
-
-
-## / XOP Code Condition type
-
-type
-  x86_xop_cc* {.pure.} = enum
-    INVALID = 0,     ## /< Uninitialized.
-    LT, LE, GT, GE, EQ,
-    NEQ, FALSE, TRUE
+    MEM
+    FP## /< = CS_OP_MEM (Memory operand).
 
 
 ## / AVX broadcast type
@@ -181,7 +92,9 @@ type
   x86_sse_cc* {.pure.} = enum
     INVALID = 0,     ## /< Uninitialized.
     EQ, LT, LE, UNORD, NEQ,
-    NLT, NLE, ORD
+    NLT, NLE, ORD, EQ_UQ, NGE,
+    NGT, FALSE, NEQ_OQ, GE,
+    GT, TRUE
 
 
 ## / AVX Code Condition type
@@ -227,17 +140,15 @@ type
     REPNE = 0xf2,    ## /< repne/repnz (cs_x86.prefix[0]
     REP = 0xf3       ## /< rep (cs_x86.prefix[0]
 
-const
-  REPE = REP
 
 ## / Instruction's operand referring to memory
 ## / This is associated with OP_MEM operand type above
 
 type
   x86_op_mem* {.bycopy.} = object
-    segment*: x86_reg          ## /< segment register (or INVALID if irrelevant)
-    base*: x86_reg             ## /< base register (or INVALID if irrelevant)
-    index*: x86_reg            ## /< index register (or INVALID if irrelevant)
+    segment*: cuint         ## /< segment register (or INVALID if irrelevant)
+    base*: cuint            ## /< base register (or INVALID if irrelevant)
+    index*: cuint            ## /< index register (or INVALID if irrelevant)
     scale*: cint               ## /< scale for index register
     disp*: int64_t             ## /< displacement value
 
@@ -247,7 +158,8 @@ type
 type
   INNER_C_UNION_x86_296* {.bycopy, union.} = object
     reg*: x86_reg              ## /< register value for REG operand
-    imm*: int64_t              ## /< immediate value for IMM operand
+    imm*: int64_t
+    fp*: cdouble## /< immediate value for IMM operand
     mem*: x86_op_mem           ## /< base/index/scale/disp value for MEM operand
 
   cs_x86_op* {.bycopy.} = object
@@ -256,59 +168,48 @@ type
     size*: uint8_t ## / How is this operand accessed? (READ, WRITE or READ|WRITE)
                  ## / This field is combined of cs_ac_type.
                  ## / NOTE: this field is irrelevant if engine is compiled in DIET mode.
-    access*: uint8_t           ## / AVX broadcast type, or 0 if irrelevant
     avx_bcast*: x86_avx_bcast  ## / AVX zero opmask {z}
     avx_zero_opmask*: bool
 
-  cs_x86_encoding* {.bycopy.} = object
-    modrm_offset*: uint8_t     ## / ModR/M offset, or 0 when irrelevant
-
-    disp_offset*: uint8_t
-    disp_size*: uint8_t        ## / Immediate offset, or 0 when irrelevant.
-    imm_offset*: uint8_t
-    imm_size*: uint8_t
 
 
 ## / Instruction structure
 
 type
-  INNER_C_UNION_x86_381* {.bycopy, union.} = object
-    eflags*: uint64_t          ## / EFLAGS updated by this instruction.
-                    ## / This can be formed from OR combination of EFLAGS_* symbols in x86.h
-    ## / FPU_FLAGS updated by this instruction.
-    ## / This can be formed from OR combination of FPU_FLAGS_* symbols in x86.h
-    fpu_flags*: uint64_t
-
   cs_x86* {.bycopy.} = object
-    prefix*: array[4, uint8_t] ## / Instruction prefix, which can be up to 4 bytes.
-                            ## / A prefix byte gets value 0 when irrelevant.
-                            ## / prefix[0] indicates REP/REPNE/LOCK prefix (See REP/REPNE/LOCK above)
-                            ## / prefix[1] indicates segment override (irrelevant for x86_64):
-                            ## / See CS/SS/DS/ES/FS/GS above.
-                            ## / prefix[2] indicates operand-size override (OPSIZE)
-                            ## / prefix[3] indicates address-size override (ADDRSIZE)
-    ## / Instruction opcode, which can be from 1 to 4 bytes in size.
-    ## / This contains VEX opcode as well.
-    ## / An trailing opcode byte gets value 0 when irrelevant.
+    prefix*: array[4, uint8_t]
     opcode*: array[4, uint8_t]  ## / REX prefix: only a non-zero value is relevant for x86_64
-    rex*: uint8_t              ## / Address size, which can be overridden with above prefix[5].
-    addr_size*: uint8_t        ## / ModR/M byte
-    modrm*: uint8_t            ## / SIB value, or 0 when irrelevant.
-    sib*: uint8_t              ## / Displacement value, valid if encoding.disp_offset != 0
-    disp*: int64_t             ## / SIB index register, or INVALID when irrelevant.
+    rex*: uint8_t            ## / Address size, which can be overridden with above prefix[5].
+    addr_size*: uint8_t
+    ## / ModR/M byte
+    modrm*: uint8_t
+    ## / SIB value, or 0 when irrelevant.
+    sib*: uint8_t
+    ## / Displacement value, valid if encoding.disp_offset != 0
+    disp*: int32_t
+    ## / SIB index register, or INVALID when irrelevant.
     sib_index*: x86_reg        ## / SIB scale, only applicable if sib_index is valid.
     sib_scale*: int8_t         ## / SIB base register, or INVALID when irrelevant.
     sib_base*: x86_reg         ## / XOP Code Condition
-    xop_cc*: x86_xop_cc        ## / SSE Code Condition
+
+    # xop_cc*: x86_xop_cc        ## / SSE Code Condition
     sse_cc*: x86_sse_cc        ## / AVX Code Condition
     avx_cc*: x86_avx_cc        ## / AVX Suppress all Exception
     avx_sae*: bool             ## / AVX static rounding mode
     avx_rm*: x86_avx_rm
-    flags*: INNER_C_UNION_x86_381
+    # flags*: INNER_C_UNION_x86_381
     op_count*: uint8_t
     operands*: array[8, cs_x86_op] ## /< operands for this instruction.
-    encoding*: cs_x86_encoding ## /< encoding information
+    # encoding*: cs_x86_encoding ## /< encoding information
 
+
+static:
+  var accessOffset = 0
+
+  for key, val in fieldPairs(cs_x86()):
+    echo "[X86] ", key, ": ", accessOffset
+
+    accessOffset.inc sizeof(val)
 
 ## / X86 instructions
 

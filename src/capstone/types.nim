@@ -10,11 +10,6 @@ type
     SPARC
     SYSZ
     XCORE
-    M68K
-    TMS320C64X
-    M680X
-    EVM
-    MOS65XX
     MAX
     # ALL = 0xFFFF
 
@@ -95,34 +90,28 @@ when false:
 
       accessOffset.inc sizeof(val)
 
-type Mode* = distinct cuint
+type Mode* = distinct uint
 
 template genTmpl(name, expression: untyped) =
   template name*(_: type Mode): Mode = (expression).Mode
 
 genTmpl LittleEndian, 0
-genTmpl Arm, 0
+genTmpl BigEndian, 1'uint shl 31
+
 genTmpl Bit16, 1 shl 1
 genTmpl Bit32, 1 shl 2
 genTmpl Bit64, 1 shl 3
+
+genTmpl Arm, 0
 genTmpl Thumb, 1 shl 4
 genTmpl MClass, 1 shl 5
 genTmpl V8, 1 shl 6
 genTmpl Micro, 1 shl 4
 genTmpl Mips3, 1 shl 5
 genTmpl Mips32R6, 1 shl 6
-genTmpl Mips2, 1 shl 7
+genTmpl MipsGP64, 1 shl 7
 genTmpl V9, 1 shl 4
 genTmpl QPX, 1 shl 4
-
-genTmpl M68K_000, 1 shl 1
-genTmpl M68K_010, 1 shl 2
-genTmpl M68K_020, 1 shl 3
-genTmpl M68K_030, 1 shl 4
-genTmpl M68K_040, 1 shl 5
-genTmpl M68K_060, 1 shl 6
-
-genTmpl BigEndian, 1'uint shl 31
 
 genTmpl Mips32, 1 shl 2
 genTmpl Mips64, 1 shl 3

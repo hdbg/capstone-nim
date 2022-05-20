@@ -1,77 +1,108 @@
 ##  Capstone Disassembly Engine
-##  By Nguyen Anh Quynh <aquynh@gmail.com>, 2014-2015
+##  By Nguyen Anh Quynh <aquynh@gmail.com>, 2014
 
 import
   platform
 
 ##  GCC SPARC toolchain has a default macro called "sparc" which breaks
 ##  compilation
-
-## / Enums corresponding to Sparc condition codes, both icc's and fcc's.
+## > Enums corresponding to Sparc condition codes, both icc's and fcc's.
 
 type
   sparc_cc* = enum
-    SPARC_CC_INVALID = 0,       ## /< invalid CC (default)
-                       ##  Integer condition codes
-    SPARC_CC_ICC_N = 0 + 256,     ## /< Never
-    SPARC_CC_ICC_E = 1 + 256,     ## /< Equal
-    SPARC_CC_ICC_LE = 2 + 256,    ## /< Less or Equal
-    SPARC_CC_ICC_L = 3 + 256,     ## /< Less
-    SPARC_CC_ICC_LEU = 4 + 256,   ## /< Less or Equal Unsigned
+    SPARC_CC_INVALID = 0,       ##  invalid CC (default)
+                       ## > Integer condition codes
+    SPARC_CC_ICC_N = 0 + 256,     ##  Never
+    SPARC_CC_ICC_E = 1 + 256,     ##  Equal
+    SPARC_CC_ICC_LE = 2 + 256,    ##  Less or Equal
+    SPARC_CC_ICC_L = 3 + 256,     ##  Less
+    SPARC_CC_ICC_LEU = 4 + 256,   ##  Less or Equal Unsigned
+    SPARC_CC_ICC_CS = 5 + 256,    ##  Carry Set/Less Unsigned
+    SPARC_CC_ICC_NEG = 6 + 256,   ##  Negative
+    SPARC_CC_ICC_VS = 7 + 256,    ##  Overflow Set
+    SPARC_CC_ICC_A = 8 + 256,     ##  Always
+    SPARC_CC_ICC_NE = 9 + 256,    ##  Not Equal
+    SPARC_CC_ICC_G = 10 + 256,    ##  Greater
+    SPARC_CC_ICC_GE = 11 + 256,   ##  Greater or Equal
+    SPARC_CC_ICC_GU = 12 + 256,   ##  Greater Unsigned
+    SPARC_CC_ICC_CC = 13 + 256,   ##  Carry Clear/Great or Equal Unsigned
+    SPARC_CC_ICC_POS = 14 + 256,  ##  Positive
+    SPARC_CC_ICC_VC = 15 + 256,   ##  Overflow Clear
+    ## > Floating condition codes
+    SPARC_CC_FCC_N = 0 + 16 + 256,  ##  Never
+    SPARC_CC_FCC_NE = 1 + 16 + 256, ##  Not Equal
+    SPARC_CC_FCC_LG = 2 + 16 + 256, ##  Less or Greater
+    SPARC_CC_FCC_UL = 3 + 16 + 256, ##  Unordered or Less
+    SPARC_CC_FCC_L = 4 + 16 + 256,  ##  Less
+    SPARC_CC_FCC_UG = 5 + 16 + 256, ##  Unordered or Greater
+    SPARC_CC_FCC_U = 7 + 16 + 256,  ##  Unordered
+    SPARC_CC_FCC_A = 8 + 16 + 256,  ##  Always
 
-    SPARC_CC_ICC_CS = 5 + 256,    ## /< Carry Set/Less Unsigned
-    SPARC_CC_ICC_NEG = 6 + 256,   ## /< Negative
-    SPARC_CC_ICC_VS = 7 + 256,    ## /< Overflow Set
-
-
-    SPARC_CC_ICC_A = 8 + 256,     ## /< Always
-    SPARC_CC_ICC_NE = 9 + 256,    ## /< Not Equal
-    SPARC_CC_ICC_G = 10 + 256,    ## /< Greater
-    SPARC_CC_ICC_GE = 11 + 256,   ## /< Greater or Equal
-    SPARC_CC_ICC_GU = 12 + 256,   ## /< Greater Unsigned
-    SPARC_CC_ICC_CC = 13 + 256,   ## /< Carry Clear/Great or Equal Unsigned
-    SPARC_CC_ICC_POS = 14 + 256,  ## /< Positive
-    SPARC_CC_ICC_VC = 15 + 256,   ## /< Overflow Clear
-                          ##  Floating condition codes
-    SPARC_CC_FCC_N = 0 + 16 + 256,  ## /< Never
-    SPARC_CC_FCC_NE = 1 + 16 + 256, ## /< Not Equal
-    SPARC_CC_FCC_LG = 2 + 16 + 256, ## /< Less or Greater
-    SPARC_CC_FCC_UL = 3 + 16 + 256, ## /< Unordered or Less
-    SPARC_CC_FCC_L = 4 + 16 + 256,  ## /< Less
-    SPARC_CC_FCC_UG = 5 + 16 + 256, ## /< Unordered or Greater
-    SPARC_CC_FCC_G = 6 + 16 + 256,  ## /< Greater
-    SPARC_CC_FCC_U = 7 + 16 + 256,  ## /< Unordered
-    SPARC_CC_FCC_A = 8 + 16 + 256,  ## /< Always
-    SPARC_CC_FCC_E = 9 + 16 + 256,  ## /< Equal
-    SPARC_CC_FCC_UE = 10 + 16 + 256, ## /< Unordered or Equal
-    SPARC_CC_FCC_GE = 11 + 16 + 256, ## /< Greater or Equal
-    SPARC_CC_FCC_UGE = 12 + 16 + 256, ## /< Unordered or Greater or Equal
-    SPARC_CC_FCC_LE = 13 + 16 + 256, ## /< Less or Equal
-    SPARC_CC_FCC_ULE = 14 + 16 + 256, ## /< Unordered or Less or Equal
-    SPARC_CC_FCC_O = 15 + 16 + 256  ## /< Ordered
+    SPARC_CC_FCC_E = 9 + 16 + 256,  ##  Equal
+    SPARC_CC_FCC_UE = 10 + 16 + 256, ##  Unordered or Equal
+    SPARC_CC_FCC_GE = 11 + 16 + 256, ##  Greater or Equal
+    SPARC_CC_FCC_UGE = 12 + 16 + 256, ##  Unordered or Greater or Equal
+    SPARC_CC_FCC_LE = 13 + 16 + 256, ##  Less or Equal
+    SPARC_CC_FCC_ULE = 14 + 16 + 256, ##  Unordered or Less or Equal
+    SPARC_CC_FCC_O = 15 + 16 + 256  ##  Ordered
 
 
-## / Branch hint
+## > Branch hint
 
 type
   sparc_hint* = enum
-    SPARC_HINT_INVALID = 0,     ## /< no hint
-    SPARC_HINT_A = 1 shl 0,       ## /< annul delay slot instruction
-    SPARC_HINT_PT = 1 shl 1,      ## /< branch taken
-    SPARC_HINT_PN = 1 shl 2       ## /< branch NOT taken
+    SPARC_HINT_INVALID = 0,     ##  no hint
+    SPARC_HINT_A = 1 shl 0,       ##  annul delay slot instruction
+    SPARC_HINT_PT = 1 shl 1,      ##  branch taken
+    SPARC_HINT_PN = 1 shl 2       ##  branch NOT taken
 
 
-## / Operand type for instruction's operands
+## > Operand type for instruction's operands
 
 type
   sparc_op_type* = enum
-    SPARC_OP_INVALID = 0,       ## /< = CS_OP_INVALID (Uninitialized).
-    SPARC_OP_REG,             ## /< = CS_OP_REG (Register operand).
-    SPARC_OP_IMM,             ## /< = CS_OP_IMM (Immediate operand).
-    SPARC_OP_MEM              ## /< = CS_OP_MEM (Memory operand).
+    SPARC_OP_INVALID = 0,       ##  = CS_OP_INVALID (Uninitialized).
+    SPARC_OP_REG,             ##  = CS_OP_REG (Register operand).
+    SPARC_OP_IMM,             ##  = CS_OP_IMM (Immediate operand).
+    SPARC_OP_MEM              ##  = CS_OP_MEM (Memory operand).
 
 
-## / SPARC registers
+##  Instruction's operand referring to memory
+##  This is associated with SPARC_OP_MEM operand type above
+
+type
+  sparc_op_mem* {.bycopy.} = object
+    base*: uint8_t             ##  base register
+    index*: uint8_t            ##  index register
+    disp*: int32_t             ##  displacement/offset value
+
+
+##  Instruction operand
+
+type
+  INNER_C_UNION_sparc_97* {.bycopy, union.} = object
+    reg*: cuint                ##  register value for REG operand
+    imm*: int32_t              ##  immediate value for IMM operand
+    mem*: sparc_op_mem         ##  base/disp value for MEM operand
+
+  cs_sparc_op* {.bycopy.} = object
+    `type`*: sparc_op_type     ##  operand type
+    ano_sparc_97*: INNER_C_UNION_sparc_97
+
+
+##  Instruction structure
+
+type
+  cs_sparc* {.bycopy.} = object
+    cc*: sparc_cc              ##  code condition for this insn
+    hint*: sparc_hint ##  branch hint: encoding as bitwise OR of sparc_hint.
+                    ##  Number of operands of this instruction,
+                    ##  or 0 when instruction has no operand.
+    op_count*: uint8_t
+    operands*: array[4, cs_sparc_op] ##  operands for this instruction.
+
+
+## > SPARC registers
 
 type
   sparc_reg* = enum
@@ -100,44 +131,7 @@ const
   SPARC_REG_O6* = SPARC_REG_SP
   SPARC_REG_I6* = SPARC_REG_FP
 
-## / Instruction's operand referring to memory
-## / This is associated with SPARC_OP_MEM operand type above
-
-type
-  sparc_op_mem* {.bycopy.} = object
-    base*: uint8_t             ## /< base register, can be safely interpreted as
-                 ## /< a value of type `sparc_reg`, but it is only
-                 ## /< one byte wide
-    index*: uint8_t            ## /< index register, same conditions apply here
-    disp*: int32_t             ## /< displacement/offset value
-
-
-## / Instruction operand
-
-type
-  INNER_C_UNION_sparc_196* {.bycopy, union.} = object
-    reg*: sparc_reg            ## /< register value for REG operand
-    imm*: int64_t              ## /< immediate value for IMM operand
-    mem*: sparc_op_mem         ## /< base/disp value for MEM operand
-
-  cs_sparc_op* {.bycopy.} = object
-    `type`*: sparc_op_type     ## /< operand type
-    ano_sparc_196*: INNER_C_UNION_sparc_196
-
-
-## / Instruction structure
-
-type
-  cs_sparc* {.bycopy.} = object
-    cc*: sparc_cc              ## /< code condition for this insn
-    hint*: sparc_hint ## /< branch hint: encoding as bitwise OR of sparc_hint.
-                    ## / Number of operands of this instruction,
-                    ## / or 0 when instruction has no operand.
-    op_count*: uint8_t
-    operands*: array[4, cs_sparc_op] ## /< operands for this instruction.
-
-
-## / SPARC instruction
+## > SPARC instruction
 
 type
   sparc_insn* = enum
@@ -212,15 +206,15 @@ type
     SPARC_INS_RET, SPARC_INS_RETL, SPARC_INS_ENDING ##  <-- mark the end of the list of instructions
 
 
-## / Group of SPARC instructions
+## > Group of SPARC instructions
 
 type
   sparc_insn_group* = enum
-    SPARC_GRP_INVALID = 0,      ## /< = CS_GRP_INVALID
-                        ##  Generic groups
+    SPARC_GRP_INVALID = 0,      ##  = CS_GRP_INVALID
+                        ## > Generic groups
                         ##  all jump instructions (conditional+direct+indirect jumps)
-    SPARC_GRP_JUMP,           ## /< = CS_GRP_JUMP
-                   ##  Architecture-specific groups
+    SPARC_GRP_JUMP,           ##  = CS_GRP_JUMP
+                   ## > Architecture-specific groups
     SPARC_GRP_HARDQUAD = 128, SPARC_GRP_V9, SPARC_GRP_VIS, SPARC_GRP_VIS2,
     SPARC_GRP_VIS3, SPARC_GRP_32BIT, SPARC_GRP_64BIT, SPARC_GRP_ENDING ##  <-- mark the end of the list of groups
 

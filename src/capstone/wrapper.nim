@@ -1,6 +1,6 @@
 import private/[
   raw_arm, raw_arm64, raw_mips, raw_systemz,
-  raw_x86, raw_xcore raw_ppc, raw_sparc]
+  raw_x86, raw_xcore, raw_ppc, raw_sparc]
 import types
 
 type
@@ -16,10 +16,6 @@ type
     sparc: cs_sparc
     sysz: cs_sysz
     xcore: cs_xcore
-    # tms320c64x: cs_tms320c64x
-    # m680x: cs_m680x
-    # evm: cs_evm
-    # mos65xx: cs_mos65xx
 
   RawDetail {.bycopy.} = object
     regs_read: array[12, uint8]
@@ -34,14 +30,33 @@ type
     info: ArchInstructionInfo
 
   RawInstruction {.bycopy.} = object
-    id: uint64
+    id: uint
     address: uint64
     size: uint16
-    bytes: array[16, byte]
+    bytes: array[16, uint8]
     mnemonic: array[32, char]
-    op_str: array[162, char]
+    op_str: array[160, char]
 
     detail: ptr RawDetail
+
+static:
+  var accessOffset = 0
+
+  for key, val in fieldPairs(RawDetail()):
+    echo "[RawDetail] ", key, ": ", accessOffset
+
+    accessOffset.inc sizeof(val)
+
+static:
+  echo ""
+  echo ""
+
+  var accessOffset = 0
+
+  for key, val in fieldPairs(RawInstruction()):
+    echo "[RawInstruction] ", key, ": ", accessOffset
+
+    accessOffset.inc sizeof(val)
 
 const libname =
   when defined(Windows):
@@ -64,4 +79,6 @@ proc cs_free(insn: ptr RawInstruction, count: uint)
 proc cs_malloc(handle: RawHandle): ptr RawInstruction
 
 proc cs_disasm_iter(handle: RawHandle, code: RawCode, size: ptr uint, address: ptr pointer, insn: ptr RawInstruction): bool
+
+proc cs_version(major, minor: ptr int): uint
 {.pop.}

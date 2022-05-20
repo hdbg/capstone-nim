@@ -72,16 +72,17 @@ proc initInstruction(raw: RawInstruction): Instruction =
       if c == '\x00': return
       result.add c
 
-
   result = Instruction(id: raw.id, address: raw.address.uint64)
 
-  result.bytes = toSeq(raw.bytes)
+  for b in raw.bytes:
+    if b == 0: break
+    result.bytes.add b
+
   result.mnemonic = raw.mnemonic.convString
   result.op = raw.op_str.convString
 
 proc convArray[T, V](src: openArray[T], size: uint): seq[V] =
-
-  if size < 0:
+  if size > 0:
     for i in 0..size-1:
       result.add V(src[i])
 
@@ -90,12 +91,14 @@ proc initDetail(engine: CapStone, raw: RawDetail): Detail =
 
   case engine.arch
   of Architecture.X86:
-    result.x86 = initX86(raw.info.x86)
-
     result.regsReadX86 = convArray[uint8, X86_Reg](raw.regs_read, raw.regs_read_count)
     result.regsWriteX86 = convArray[uint8, X86_Reg](raw.regs_write, raw.regs_write_count)
 
     result.groups = convArray[uint8, X86_Group](raw.groups, raw.groups_count)
+
+    result.x86 = initX86(raw.info.x86)
+
+    print raw.info.x86
 
   # Add more arch as I add more wrappers
   else: discard
@@ -112,6 +115,9 @@ proc new*(_: type CapStone, arch: Architecture, mode: Mode): CapStone =
 proc set*(engine: CapStone, kind: OptionType, val: OptionValue) =
   cs_option(engine.handle, kind, val.uint).errorRaise
   engine.options[kind] = val
+
+proc version*(_: type CapStone): tuple[major, minor: int] =
+  discard cs_version(unsafeAddr(result.major), unsafeAddr(result.minor))
 
 proc disasm*(engine: CapStone, code: seq[uint8], count: uint = 0, address: uint64 = 0): seq[Instruction] =
   const instSize = (sizeof RawInstruction).uint
@@ -135,11 +141,10 @@ proc disasm*(engine: CapStone, code: seq[uint8], count: uint = 0, address: uint6
     let nextAddress = baseAddr + (i.uint * instSize).uint
     let raw = cast[ptr RawInstruction](nextAddress)[]
 
-    print raw
-
     var newInst = initInstruction(raw)
 
     if engine.options[OptionType.Detail] == OptionValue.On:
+      let raw_detail = cast[uint64](raw.detail)
       newInst.detail = engine.initDetail(raw.detail[]).some
 
     result.add move(newInst)

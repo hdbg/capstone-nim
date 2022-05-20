@@ -1,77 +1,75 @@
 ##  Capstone Disassembly Engine
-##  By Nguyen Anh Quynh <aquynh@gmail.com>, 2014-2015
+##  By Nguyen Anh Quynh <aquynh@gmail.com>, 2014
 
 import
   platform
 
-## / Operand type for instruction's operands
+## > Operand type for instruction's operands
 
 type
   xcore_op_type* = enum
-    XCORE_OP_INVALID = 0,       ## /< = CS_OP_INVALID (Uninitialized).
-    XCORE_OP_REG,             ## /< = CS_OP_REG (Register operand).
-    XCORE_OP_IMM,             ## /< = CS_OP_IMM (Immediate operand).
-    XCORE_OP_MEM              ## /< = CS_OP_MEM (Memory operand).
+    XCORE_OP_INVALID = 0,       ##  = CS_OP_INVALID (Uninitialized).
+    XCORE_OP_REG,             ##  = CS_OP_REG (Register operand).
+    XCORE_OP_IMM,             ##  = CS_OP_IMM (Immediate operand).
+    XCORE_OP_MEM              ##  = CS_OP_MEM (Memory operand).
 
 
-## / XCore registers
+##  Instruction's operand referring to memory
+##  This is associated with XCORE_OP_MEM operand type above
+
+type
+  xcore_op_mem* {.bycopy.} = object
+    base*: uint8_t             ##  base register
+    index*: uint8_t            ##  index register
+    disp*: int32_t             ##  displacement/offset value
+    direct*: cint              ##  +1: forward, -1: backward
+
+
+##  Instruction operand
+
+type
+  INNER_C_UNION_xcore_46* {.bycopy, union.} = object
+    reg*: cuint                ##  register value for REG operand
+    imm*: int32_t              ##  immediate value for IMM operand
+    mem*: xcore_op_mem         ##  base/disp value for MEM operand
+
+  cs_xcore_op* {.bycopy.} = object
+    `type`*: xcore_op_type     ##  operand type
+    ano_xcore_46*: INNER_C_UNION_xcore_46
+
+
+##  Instruction structure
+
+type
+  cs_xcore* {.bycopy.} = object
+    op_count*: uint8_t         ##  Number of operands of this instruction,
+                     ##  or 0 when instruction has no operand.
+    operands*: array[8, cs_xcore_op] ##  operands for this instruction.
+
+
+## > XCore registers
 
 type
   xcore_reg* = enum
     XCORE_REG_INVALID = 0, XCORE_REG_CP, XCORE_REG_DP, XCORE_REG_LR, XCORE_REG_SP,
     XCORE_REG_R0, XCORE_REG_R1, XCORE_REG_R2, XCORE_REG_R3, XCORE_REG_R4,
     XCORE_REG_R5, XCORE_REG_R6, XCORE_REG_R7, XCORE_REG_R8, XCORE_REG_R9,
-    XCORE_REG_R10, XCORE_REG_R11, ##  pseudo registers
-    XCORE_REG_PC,             ## /< pc
+    XCORE_REG_R10, XCORE_REG_R11, ## > pseudo registers
+    XCORE_REG_PC,             ##  pc
                  ##  internal thread registers
                  ##  see The-XMOS-XS1-Architecture(X7879A).pdf
-    XCORE_REG_SCP,            ## /< save pc
-    XCORE_REG_SSR,            ## < save status
-    XCORE_REG_ET,             ## < exception type
-    XCORE_REG_ED,             ## < exception data
-    XCORE_REG_SED,            ## < save exception data
-    XCORE_REG_KEP,            ## < kernel entry pointer
-    XCORE_REG_KSP,            ## < kernel stack pointer
-    XCORE_REG_ID,             ## < thread ID
+    XCORE_REG_SCP,            ##  save pc
+    XCORE_REG_SSR,            ##  save status
+    XCORE_REG_ET,             ##  exception type
+    XCORE_REG_ED,             ##  exception data
+    XCORE_REG_SED,            ##  save exception data
+    XCORE_REG_KEP,            ##  kernel entry pointer
+    XCORE_REG_KSP,            ##  kernel stack pointer
+    XCORE_REG_ID,             ##  thread ID
     XCORE_REG_ENDING          ##  <-- mark the end of the list of registers
 
 
-## / Instruction's operand referring to memory
-## / This is associated with XCORE_OP_MEM operand type above
-
-type
-  xcore_op_mem* {.bycopy.} = object
-    base*: uint8_t             ## /< base register, can be safely interpreted as
-                 ## /< a value of type `xcore_reg`, but it is only
-                 ## /< one byte wide
-    index*: uint8_t            ## /< index register, same conditions apply here
-    disp*: int32_t             ## /< displacement/offset value
-    direct*: cint              ## /< +1: forward, -1: backward
-
-
-## / Instruction operand
-
-type
-  INNER_C_UNION_xcore_82* {.bycopy, union.} = object
-    reg*: xcore_reg            ## /< register value for REG operand
-    imm*: int32_t              ## /< immediate value for IMM operand
-    mem*: xcore_op_mem         ## /< base/disp value for MEM operand
-
-  cs_xcore_op* {.bycopy.} = object
-    `type`*: xcore_op_type     ## /< operand type
-    ano_xcore_82*: INNER_C_UNION_xcore_82
-
-
-## / Instruction structure
-
-type
-  cs_xcore* {.bycopy.} = object
-    op_count*: uint8_t         ## / Number of operands of this instruction,
-                     ## / or 0 when instruction has no operand.
-    operands*: array[8, cs_xcore_op] ## /< operands for this instruction.
-
-
-## / XCore instruction
+## > XCore instruction
 
 type
   xcore_insn* = enum
@@ -105,13 +103,13 @@ type
     XCORE_INS_XOR, XCORE_INS_ZEXT, XCORE_INS_ENDING ##  <-- mark the end of the list of instructions
 
 
-## / Group of XCore instructions
+## > Group of XCore instructions
 
 type
   xcore_insn_group* = enum
-    XCORE_GRP_INVALID = 0,      ## /< = CS_GRP_INVALID
-                        ##  Generic groups
+    XCORE_GRP_INVALID = 0,      ##  = CS_GRP_INVALID
+                        ## > Generic groups
                         ##  all jump instructions (conditional+direct+indirect jumps)
-    XCORE_GRP_JUMP,           ## /< = CS_GRP_JUMP
+    XCORE_GRP_JUMP,           ##  = CS_GRP_JUMP
     XCORE_GRP_ENDING          ##  <-- mark the end of the list of groups
 

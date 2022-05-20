@@ -7,6 +7,8 @@ import pkg/print
 suite "Test x64":
   let engine = CapStone.new(Architecture.X86, Mode.Bit64)
 
+  print CapStone.version()
+
   test "Base disasm":
     const instr: seq[uint8] = @[0x41.uint8, 0x5c.uint8, 0x41.uint8, 0x5d.uint8]
 
@@ -21,12 +23,21 @@ suite "Test x64":
       decoded[1].op == "r13"
 
   test "Details":
-    const instr: seq[uint8] = @[0x41.uint8, 0x5c.uint8, 0x41.uint8, 0x5d.uint8]
+    const instr: seq[uint8] = @[
+      0x8d.uint8, 0x4c.uint8, 0x32.uint8, 0x08.uint8,
+      0x01.uint8, 0xd8.uint8
+    ]
     engine.set(OptionType.Detail, OptionValue.On)
+    engine.set(OptionType.Skipdata, OptionValue.Off)
 
     let decoded = engine.disasm(instr)
 
-    # print decoded
+    echo "############################"
+    echo "############################"
+    echo "############################"
+    echo "############################"
+
+    print decoded
 
 
 
