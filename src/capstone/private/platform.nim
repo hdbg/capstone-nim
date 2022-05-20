@@ -8,6 +8,8 @@ type
   int64_t* = clonglong
   uint64_t* = culonglong
 
+  GeneralEnum* = int32_t
+
 converter toInt8*(x: int8_t): int8 = x.int8
 converter toInt16*(x: int16_t): int16 = x.int16
 converter toInt32*(x: int32_t): int32 = x.int32

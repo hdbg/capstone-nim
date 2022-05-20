@@ -2,12 +2,12 @@ import capstone
 import unittest
 
 import capstone/types
-import pkg/print
+
+import std/options
 
 suite "Test x64":
   let engine = CapStone.new(Architecture.X86, Mode.Bit64)
 
-  print CapStone.version()
 
   test "Base disasm":
     const instr: seq[uint8] = @[0x41.uint8, 0x5c.uint8, 0x41.uint8, 0x5d.uint8]
@@ -32,12 +32,13 @@ suite "Test x64":
 
     let decoded = engine.disasm(instr)
 
-    echo "############################"
-    echo "############################"
-    echo "############################"
-    echo "############################"
+    check:
+      decoded.len == 2
 
-    print decoded
+      len(get(decoded[0].detail).x86.operands) == 2
+      len(get(decoded[1].detail).x86.operands) == 2
+
+
 
 
 

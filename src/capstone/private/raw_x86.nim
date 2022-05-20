@@ -13,8 +13,10 @@ template X86_REL_ADDR*(insn: untyped): untyped =
 
 ## / X86 registers
 
+{.pragma: cenum, pure, size: sizeof(cint)}
+
 type
-  x86_reg* {.pure.} = enum
+  x86_reg* {.cenum.} = enum
     INVALID = 0, AH, AL, AX, BH, BL,
     BP, BPL, BX, CH, CL, CS,
     CX, DH, DI, DIL, DL, DS,
@@ -67,7 +69,7 @@ type
 ## / Operand type for instruction's operands
 
 type
-  x86_op_type* {.pure.} = enum
+  x86_op_type* {.cenum.} = enum
     INVALID = 0           ## /< = CS_OP_INVALID (Uninitialized).
     REG               ## /< = CS_OP_REG (Register operand).
     IMM               ## /< = CS_OP_IMM (Immediate operand).
@@ -78,7 +80,7 @@ type
 ## / AVX broadcast type
 
 type
-  x86_avx_bcast* {.pure.} = enum
+  x86_avx_bcast* {.cenum.} = enum
     INVALID = 0,  ## /< Uninitialized.
     B2,          ## /< AVX512 broadcast type {1to2}
     B4,          ## /< AVX512 broadcast type {1to4}
@@ -89,7 +91,7 @@ type
 ## / SSE Code Condition type
 
 type
-  x86_sse_cc* {.pure.} = enum
+  x86_sse_cc* {.cenum.} = enum
     INVALID = 0,     ## /< Uninitialized.
     EQ, LT, LE, UNORD, NEQ,
     NLT, NLE, ORD, EQ_UQ, NGE,
@@ -100,7 +102,7 @@ type
 ## / AVX Code Condition type
 
 type
-  x86_avx_cc* {.pure.} = enum
+  x86_avx_cc* {.cenum.} = enum
     INVALID = 0,     ## /< Uninitialized.
     EQ, LT, LE, UNORD, NEQ,
     NLT, NLE, ORD, EQ_UQ,
@@ -115,7 +117,7 @@ type
 ## / AVX static rounding mode type
 
 type
-  x86_avx_rm* {.pure.} = enum
+  x86_avx_rm* {.cenum.} = enum
     INVALID = 0,     ## /< Uninitialized.
     RN,            ## /< Round to nearest
     RD,            ## /< Round down
@@ -126,7 +128,7 @@ type
 ## / Instruction prefixes - to be used in cs_x86.prefix[]
 
 type
-  x86_prefix* {.pure.} = enum
+  x86_prefix* {.cenum.} = enum
     INVALID = 0,
     ES = 0x26,       ## /< segment override ES (cs_x86.prefix[1]
     CS = 0x2e,       ## /< segment override CS (cs_x86.prefix[1]
@@ -188,9 +190,9 @@ type
     ## / Displacement value, valid if encoding.disp_offset != 0
     disp*: int32_t
     ## / SIB index register, or INVALID when irrelevant.
-    sib_index*: x86_reg        ## / SIB scale, only applicable if sib_index is valid.
-    sib_scale*: int8_t         ## / SIB base register, or INVALID when irrelevant.
-    sib_base*: x86_reg         ## / XOP Code Condition
+    sib_index*: x86_reg
+    sib_scale*: int8_t
+    sib_base*: x86_reg
 
     # xop_cc*: x86_xop_cc        ## / SSE Code Condition
     sse_cc*: x86_sse_cc        ## / AVX Code Condition
@@ -203,18 +205,10 @@ type
     # encoding*: cs_x86_encoding ## /< encoding information
 
 
-static:
-  var accessOffset = 0
-
-  for key, val in fieldPairs(cs_x86()):
-    echo "[X86] ", key, ": ", accessOffset
-
-    accessOffset.inc sizeof(val)
-
 ## / X86 instructions
 
 type
-  x86_insn* {.pure.} = enum
+  x86_insn* {.cenum.} = enum
     INVALID = 0, AAA, AAD, AAM, AAS,
     FABS, ADC, ADCX, ADD, ADDPD,
     ADDPS, ADDSD, ADDSS, ADDSUBPD, ADDSUBPS,
@@ -581,7 +575,7 @@ type
 ## / Group of X86 instructions
 
 type
-  x86_insn_group* {.pure.} = enum
+  x86_insn_group* {.cenum.} = enum
     INVALID = 0,        ## /< = CS_INVALID
                       ##  Generic groups
                       ##  all jump instructions (conditional+direct+indirect jumps)

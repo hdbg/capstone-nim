@@ -39,25 +39,6 @@ type
 
     detail: ptr RawDetail
 
-static:
-  var accessOffset = 0
-
-  for key, val in fieldPairs(RawDetail()):
-    echo "[RawDetail] ", key, ": ", accessOffset
-
-    accessOffset.inc sizeof(val)
-
-static:
-  echo ""
-  echo ""
-
-  var accessOffset = 0
-
-  for key, val in fieldPairs(RawInstruction()):
-    echo "[RawInstruction] ", key, ": ", accessOffset
-
-    accessOffset.inc sizeof(val)
-
 const libname =
   when defined(Windows):
     "capstone.dll"

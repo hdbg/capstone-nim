@@ -4,7 +4,6 @@ import std/[strutils, sequtils, options, tables]
 import capstone/arch/x86
 include capstone/wrapper
 
-import pkg/print
 
 export OptionType, OptionValue, Architecture, Mode
 
@@ -19,10 +18,10 @@ type
   Detail* = object
     case arch: Architecture
     of Architecture.X86:
-      x86: X86
-      regsReadX86: seq[X86_Reg]
-      regsWriteX86: seq[X86_Reg]
-      groups: seq[X86_Group]
+      x86*: X86
+      regsReadX86*: seq[X86_Reg]
+      regsWriteX86*: seq[X86_Reg]
+      groups*: seq[X86_Group]
 
     # of Architecture.ARM:
     #   arm: cs_arm
@@ -81,12 +80,12 @@ proc initInstruction(raw: RawInstruction): Instruction =
   result.mnemonic = raw.mnemonic.convString
   result.op = raw.op_str.convString
 
-proc convArray[T, V](src: openArray[T], size: uint): seq[V] =
-  if size > 0:
-    for i in 0..size-1:
-      result.add V(src[i])
-
 proc initDetail(engine: CapStone, raw: RawDetail): Detail =
+  proc convArray[T, V](src: openArray[T], size: uint): seq[V] {.inline.} =
+    if size > 0:
+      for i in 0..size-1:
+        result.add V(src[i])
+
   result = Detail(arch: engine.arch)
 
   case engine.arch
@@ -97,9 +96,6 @@ proc initDetail(engine: CapStone, raw: RawDetail): Detail =
     result.groups = convArray[uint8, X86_Group](raw.groups, raw.groups_count)
 
     result.x86 = initX86(raw.info.x86)
-
-    print raw.info.x86
-
   # Add more arch as I add more wrappers
   else: discard
 

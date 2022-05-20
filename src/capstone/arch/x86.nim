@@ -1,6 +1,5 @@
-import std/[options, bitops]
-import capstone/private/[raw_x86, shared]
-import common
+import std/options
+import capstone/private/raw_x86
 
 type
   X86_Reg* = x86_reg
@@ -48,7 +47,7 @@ type
     ]
 
     opcode*: seq[uint8]
-    rex*: uint8
+    rex*: Option[uint8]
     addr_size*: uint8
 
     modrm*: uint8
@@ -73,8 +72,6 @@ template ifValid(src, dest: typed) =
 
 proc initX86Operand*(raw: cs_x86_op): X86_Operand =
   result = X86_Operand(kind: raw.`type`)
-
-  echo "Loading operand"
 
   case result.kind
   of X86_Op_Kind.REG:
@@ -119,7 +116,8 @@ proc initX86*(raw: cs_x86): X86 =
     if o == 0: break
     result.opcode.add o
 
-  result.rex = raw.rex
+  if raw.rex != 0:
+    result.rex = some(raw.rex)
 
   result.addr_size = raw.addr_size
   result.modrm = raw.modrm
@@ -128,20 +126,20 @@ proc initX86*(raw: cs_x86): X86 =
     result.sib = some(raw.sib)
 
   if raw.disp != 0:
-    result.disp = some(raw.disp.int32) # TODO: Make check
+    result.disp = some(raw.disp.int32)
 
-  if raw.sib_index != X86_Reg.INVALID:
-    result.sib_index = some(raw.sib_index)
+  if X86_Reg(raw.sib_index) != X86_Reg.INVALID:
+    result.sib_index = some(X86_Reg(raw.sib_index))
     result.sib_scale = some(int8(raw.sib_scale))
 
-  ifValid raw.sib_base, result.sib_base
+  ifValid X86_Reg(raw.sib_base), result.sib_base
 
-  ifValid raw.sse_cc, result.sse_cc
-  ifValid raw.avx_cc, result.avx_cc
+  ifValid X86_SSE_CC(raw.sse_cc), result.sse_cc
+  ifValid X86_AVX_CC(raw.avx_cc), result.avx_cc
 
   result.avx_sae = raw.avx_sae
 
-  ifValid raw.avx_rm, result.avx_rm
+  ifValid X86_AVX_RM(raw.avx_rm), result.avx_rm
 
   if raw.op_count > 0:
     for i in 0..(int(raw.op_count) - 1):
